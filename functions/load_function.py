@@ -53,8 +53,6 @@ def lambda_handler(event, context):
 
         data_objects = data_json['data_near_earth_objects']
 
-        print('hola ', data_objects)
-
         for data in data_objects:
             insert_script = 'INSERT INTO Object (name, nasa_jpl_url, absolute_magnitude_h, estimated_diameter,is_potentially_hazardous_asteroid,is_sentry_object,relative_velocity,date_object ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
             insert_value = (data['name'],
