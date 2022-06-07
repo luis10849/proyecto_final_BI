@@ -35,6 +35,7 @@ def lambda_handler(event, context):
                                 id    SERIAL PRIMARY KEY,
                                 name  varchar(40) NOT NULL,
                                 nasa_jpl_url  varchar(255) NOT NULL,
+                                api_endpoint  varchar(255) NOT NULL,
                                 absolute_magnitude_h decimal,
                                 estimated_diameter json,
                                 is_potentially_hazardous_asteroid bool,
@@ -54,9 +55,10 @@ def lambda_handler(event, context):
         data_objects = data_json['data_near_earth_objects']
 
         for data in data_objects:
-            insert_script = 'INSERT INTO Object (name, nasa_jpl_url, absolute_magnitude_h, estimated_diameter,is_potentially_hazardous_asteroid,is_sentry_object,relative_velocity,date_object ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+            insert_script = 'INSERT INTO Object (name, nasa_jpl_url , api_endpoint, absolute_magnitude_h, estimated_diameter,is_potentially_hazardous_asteroid,is_sentry_object,relative_velocity,date_object ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
             insert_value = (data['name'],
                             data['nasa_jpl_url'],
+                            data['api_endpoint'],
                             data['absolute_magnitude_h'],
                             json.dumps(data['estimated_diameter']),
                             data['is_potentially_hazardous_asteroid'],
