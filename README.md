@@ -21,3 +21,7 @@ La API utilizada en la realizacion del proyecto fue la API de la nasa para consu
 - time
 - os
 - psycopg2
+
+# Ayudas
+
+- https://www.youtube.com/watch?v=PsJsP-7cydk&t=1029s
