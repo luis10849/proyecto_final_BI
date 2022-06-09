@@ -20,11 +20,16 @@ def lambda_handler(event, context):
      body = s3_object['Body'].read()
      data_json = json.loads(body)
      
-     near_earth_objects = data_json["data_api"]['near_earth_objects']
-     element_count = data_json["data_api"]['element_count']
-     api_endpoint = data_json['api_endpoint']
+     near_earth_objects = data_json["data_api_objects"]['near_earth_objects']
+     events = data_json["data_api_events"]['events']
+     photos = data_json["data_api_photos"]['photos']
+     api_endpoint_objects = data_json['api_endpoint_objects']
+     api_endpoint_events = data_json['api_endpoint_events']
+     api_endpoint_photos = data_json['api_endpoint_photos']
      
      data_near_earth_objects = []
+     data_events = []
+     data_photos = []
      
      dates = [start_date,end_date]
      
@@ -40,14 +45,38 @@ def lambda_handler(event, context):
                   'relative_velocity': row['close_approach_data'][0]['relative_velocity'],
                   'is_sentry_object': row['is_sentry_object'],
                   'date': date,
-                  'api_endpoint': api_endpoint
+                  'api_endpoint': api_endpoint_objects
              }
              data_near_earth_objects.append(data_element)
-             
+     
+     for row in events:
+         data_element = {
+             'id': row['id'],
+             'title': row['title'],
+             'description': row['description'],
+             'source': row['sources'][0]['url'],
+             'latitude': row['geometries'][0]['coordinates'][0],
+             'longitude': row['geometries'][0]['coordinates'][1],
+             'api_endpoint': api_endpoint_events
+         }
+         data_events.append(data_element)
+    
+     for row in photos:
+         data_element = {
+             'id': row['id'],
+             'camera': row['camera']['full_name'],
+             'img_src': row['img_src'],
+             'earth_date': row['earth_date'],
+             'rover': row['rover']['name'],
+             'api_endpoint': api_endpoint_photos
+         }
+         data_photos.append(data_element)
+            
      transform_data = {
          'date_load_data': time.time(),
          'data_near_earth_objects': data_near_earth_objects,
-         'element_count': element_count,
+         'data_events': data_events,
+         'data_photos': data_photos
      } 
      if function == 'transform':
          response_load = load_json(transform_data)
