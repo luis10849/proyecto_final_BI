@@ -7,7 +7,9 @@ import os
 # enviroment variables
 API_HOST = os.getenv('API_HOST')
 API_KEY = os.getenv('API_KEY')
-API_URL = os.getenv('API_URL')
+API_URL_OBJECTS = os.getenv('API_URL_OBJECTS')
+API_URL_EVENTS = os.getenv('API_URL_EVENTS')
+API_URL_PHOTOS = os.getenv('API_URL_PHOTOS')
 ACCESS_KEY = os.getenv('ACCESS_KEY')
 SECRET_ACCESS_KEY = os.getenv('SECRET_ACCESS_KEY')
 
