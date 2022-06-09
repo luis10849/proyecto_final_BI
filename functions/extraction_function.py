@@ -19,26 +19,42 @@ def lambda_handler(event, context):
     function = json_message['function']
     start_date = json_message['start_date']
     end_date = json_message['end_date']
+    earth_date = json_message['earth_date']
+    days = json_message['days']
     print(function)
     print(start_date)
     print(end_date)
-    url = API_URL
+    print(earth_date)
+    print(days)
+    url_objects = API_URL_OBJECTS
+    url_events = API_URL_EVENTS
+    url_photos = API_URL_PHOTOS
  
-    querystring = {"start_date":start_date,"end_date":end_date,"api_key":API_KEY}
+    query_string_objects = {"start_date":start_date,"end_date":end_date,"api_key":API_KEY}
+    query_string_events = {"days":days}
+    query_string_photos = {"earth_date":earth_date,"api_key":API_KEY}
 
-    data = requests.request("GET", url, params=querystring).json()
+    data_objects = requests.request("GET", url_objects, params=query_string_objects).json()
+    data_events = requests.request("GET", url_events, params=query_string_events).json()
+    data_photos = requests.request("GET", url_photos, params=query_string_photos).json()
     date_consult_api = int( time.time() )
     
-    if len(data) == 0:
+    if len(data_objects) == 0 or len(data_events) == 0 or len(data_photos) == 0:
         print('data not found')
     else:
-        if len(data['near_earth_objects']) and function == 'extraction' :
-            api_endpoint = f"{url}?start_date={start_date}&end_date={end_date}&api_key={API_KEY}"
+        if function == 'extraction' :
+            api_endpoint_objects = f"{url_objects}?start_date={start_date}&end_date={end_date}&api_key={API_KEY}"
+            api_endpoint_events = f"{url_events}?days={days}"
+            api_endpoint_photos = f"{url_photos}?earth_date={earth_date}&api_key={API_KEY}"
             data_dict = {
-                'data_api': data,
+                'data_api_objects': data_objects,
+                'data_api_events': data_events,
+                'data_api_photos': data_photos,
                 'date_consult_api': date_consult_api,
                 'date_load_data': time.time(),
-                'api_endpoint': api_endpoint 
+                'api_endpoint_objects': api_endpoint_objects,
+                'api_endpoint_events': api_endpoint_events,
+                'api_endpoint_photos': api_endpoint_photos 
             }
             response_load = load_json(data_dict)
             if response_load[0]:
@@ -50,7 +66,6 @@ def lambda_handler(event, context):
                      print('Lambda executed Unsuccessful') 
             else:
                 print(response_load[1])
-                
            
 
 def load_json(data):
